@@ -15,10 +15,11 @@
     ---END LOG---
 
 ## 핵심 원칙
-1. 1기능 = 1커밋 (Atomic Commit)
-2. AI 태그 필수 (Assisted-by / Generated-by)
-3. 결과 수신 즉시 커밋 → 롤백 안전망
-4. AI 코드와 수동 수정은 별도 커밋
+1. 1기능 = 1커밋 (Atomic Commit) 
+2. 커밋이 되면 PUSH 
+3. AI 태그 필수 (Assisted-by / Generated-by)
+4. 결과 수신 즉시 커밋 → 롤백 안전망
+5. AI 코드와 수동 수정은 별도 커밋
 
 ## 응답 규칙
 - 테스트 코드를 함께 제공
