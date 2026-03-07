@@ -166,3 +166,32 @@
 보완 필요: Task 5 (공통 레이아웃 구현) 진행
 교훈: Express 5에서는 라우트 핸들러를 arrow function wrapper로 전달해야 this 바인딩 이슈 회피
 ---END LOG---
+
+## 8. Phase 1 - Task 5: 공통 레이아웃 구현 (ShopLayout, AdminLayout, AuthLayout)
+
+### 생성 파일
+- `client/src/components/layout/Footer.tsx` — 푸터 (저작권 표시)
+- `client/src/components/layout/AdminSidebar.tsx` — Admin 사이드바 (대시보드, 회원관리, 상품관리, 주문관리 메뉴, 현재 경로 하이라이트)
+- `client/src/components/layout/AdminTopBar.tsx` — Admin 상단바 (Shop 이동 링크, 사용자 정보, 로그아웃)
+- `client/src/components/layout/AuthLayout.tsx` — 중앙 정렬 카드 레이아웃 (`<Outlet />` 사용)
+- `client/src/components/layout/ShopLayout.tsx` — Header + `<Outlet />` + Footer (flex-col min-h-screen)
+- `client/src/components/layout/AdminLayout.tsx` — AdminSidebar + AdminTopBar + `<Outlet />` (flex h-screen)
+
+### App.tsx 라우터 업데이트
+- 중첩 레이아웃 라우팅 적용 (React Router v6 `<Outlet />` 패턴)
+- Auth 라우트: `<AuthLayout>` → LoginPage, RegisterPage
+- Shop 라우트: `<ShopLayout>` → Home, Products, ProductDetail, ProtectedRoute(Order, Checkout)
+- Admin 라우트: `<AdminRoute>` → `<AdminLayout>` → Dashboard, Users, Products, Orders
+
+### 빌드 검증
+- Client `tsc --noEmit`: 통과
+
+---LOG---
+작업: Phase 1 Task 5 공통 레이아웃 구현 (ShopLayout, AdminLayout, AuthLayout)
+입력 Context: instruction/phase1.md, instruction/init.md, instruction/core.md
+결과: 성공
+생성 파일: client/src/components/layout/Footer.tsx, AdminSidebar.tsx, AdminTopBar.tsx, AuthLayout.tsx, ShopLayout.tsx, AdminLayout.tsx
+주요 결정사항: React Router v6 Outlet 패턴으로 레이아웃 중첩, AdminLayout은 flex h-screen으로 사이드바+메인 분리
+보완 필요: Phase 2 개발 착수 (상품 관리 기능)
+교훈: client 폴더에 별도 .git이 있으면 embedded repo 경고 발생 — .git 제거 후 정상 커밋 가능
+---END LOG---
