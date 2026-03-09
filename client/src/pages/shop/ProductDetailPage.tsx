@@ -23,11 +23,13 @@ export default function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuthStore();
+  const { addItem } = useCartStore();
   const { data: product, isLoading } = useProduct(id ?? '');
 
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedSize, setSelectedSize] = useState('');
+  const [cartMessage, setCartMessage] = useState('');
   const [quantity, setQuantity] = useState(1);
 
   if (isLoading) {
@@ -51,23 +53,22 @@ export default function ProductDetailPage() {
   const displayPrice = hasDiscount ? product.salePrice! : product.price;
 
   // 옵션에서 고유 컬러/사이즈 추출
-  const colors = [...new Set(product.options.map((o) => o.color))];
+  const options = product.options ?? [];
+  const colors = [...new Set(options.map((o) => o.color))];
   const sizes = [...new Set(
-    product.options
+    options
       .filter((o) => !selectedColor || o.color === selectedColor)
       .map((o) => o.size),
   )];
 
   // 선택된 옵션의 재고 확인
-  const selectedOption = product.options.find(
+  const selectedOption = options.find(
     (o) => o.color === selectedColor && o.size === selectedSize,
   );
   const stock = selectedOption?.stock ?? 0;
   const isSoldOut = product.status === 'SOLDOUT';
 
   const canOrder = selectedColor && selectedSize && quantity > 0 && stock >= quantity && !isSoldOut;
-
-  const { addItem } = useCartStore();
 
   const addToCart = () => {
     if (!selectedOption) return;
@@ -82,7 +83,8 @@ export default function ProductDetailPage() {
       stock: selectedOption.stock,
       quantity,
     });
-    alert('장바구니에 추가되었습니다.');
+    setCartMessage('장바구니에 추가되었습니다.');
+    setTimeout(() => setCartMessage(''), 2000);
   };
 
   const handleBuyNow = () => {
@@ -91,7 +93,7 @@ export default function ProductDetailPage() {
       return;
     }
     if (!selectedOption) return;
-    addItem({
+    const orderItem = {
       productId: product.id,
       productName: product.name,
       imageUrl: images[0]?.url,
@@ -101,8 +103,8 @@ export default function ProductDetailPage() {
       originalPrice: product.price,
       stock: selectedOption.stock,
       quantity,
-    });
-    navigate('/cart');
+    };
+    navigate('/order', { state: { orderItems: [orderItem] } });
   };
 
   const discountRate = hasDiscount
@@ -216,7 +218,7 @@ export default function ProductDetailPage() {
                       </SelectTrigger>
                       <SelectContent>
                         {sizes.map((size) => {
-                          const opt = product.options.find((o) => o.color === selectedColor && o.size === size);
+                          const opt = options.find((o) => o.color === selectedColor && o.size === size);
                           const outOfStock = !opt || opt.stock === 0;
                           return (
                             <SelectItem key={size} value={size} disabled={outOfStock}>
@@ -276,6 +278,12 @@ export default function ProductDetailPage() {
                 {isSoldOut ? '품절' : '즉시구매'}
               </Button>
             </div>
+
+            {cartMessage && (
+              <div className="rounded-md bg-green-50 p-3 text-sm text-green-700 dark:bg-green-950 dark:text-green-300">
+                {cartMessage}
+              </div>
+            )}
 
             {/* 상품 설명 */}
             <div className="border-t pt-6">

@@ -111,8 +111,7 @@ export default function CartPage() {
       navigate('/login');
       return;
     }
-    // TODO: 주문 페이지로 이동
-    alert('주문/결제 기능은 준비 중입니다.');
+    navigate('/order');
   };
 
   return (

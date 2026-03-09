@@ -1,13 +1,27 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
 import { useCartStore } from '@/store/cart-store';
-import { useAuth } from '@/hooks/useAuth';
+import { authApi } from '@/api/auth.api';
 
 export default function Header() {
-  const { user, isAuthenticated } = useAuthStore();
-  const { logout } = useAuth();
-  const cartItemCount = useCartStore((s) => s.totalItems());
+  const { user, isAuthenticated, logout: clearAuth } = useAuthStore();
+  const cartItemCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0));
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const clearCart = useCartStore((s) => s.clearCart);
+
+  const logout = useMutation({
+    mutationFn: () => authApi.logout(),
+    onSuccess: () => {
+      clearAuth();
+      clearCart();
+      queryClient.clear();
+      navigate('/login');
+    },
+  });
 
   return (
     <header className="border-b bg-background">

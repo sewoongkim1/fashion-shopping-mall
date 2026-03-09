@@ -22,9 +22,7 @@ apiClient.interceptors.response.use(
         await axios.post('/api/auth/refresh', {}, { withCredentials: true });
         return apiClient(originalRequest);
       } catch {
-        if (!window.location.pathname.startsWith('/login')) {
-          window.location.href = '/login';
-        }
+        // 리다이렉트하지 않음 — 비로그인 상태에서도 상품 페이지 접근 허용
         return Promise.reject(error);
       }
     }

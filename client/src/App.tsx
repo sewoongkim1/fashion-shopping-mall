@@ -13,6 +13,8 @@ import AdminProductFormPage from '@/pages/admin/AdminProductFormPage';
 import ProductListPage from '@/pages/shop/ProductListPage';
 import ProductDetailPage from '@/pages/shop/ProductDetailPage';
 import CartPage from '@/pages/shop/CartPage';
+import OrderPage from '@/pages/shop/OrderPage';
+import OrderCompletePage from '@/pages/shop/OrderCompletePage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -42,7 +44,8 @@ function App() {
               <Route path="/products/:id" element={<ProductDetailPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route element={<ProtectedRoute />}>
-                <Route path="/order" element={<div>Order</div>} />
+                <Route path="/order" element={<OrderPage />} />
+                <Route path="/order/complete" element={<OrderCompletePage />} />
                 <Route path="/checkout" element={<div>Checkout</div>} />
               </Route>
             </Route>
