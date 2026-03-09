@@ -1,11 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuthStore } from '@/store/auth-store';
+import { useCartStore } from '@/store/cart-store';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function Header() {
   const { user, isAuthenticated } = useAuthStore();
   const { logout } = useAuth();
+  const cartItemCount = useCartStore((s) => s.totalItems());
 
   return (
     <header className="border-b bg-background">
@@ -17,6 +19,14 @@ export default function Header() {
         <nav className="flex items-center gap-4">
           <Link to="/products" className="text-sm text-muted-foreground hover:text-foreground">
             상품
+          </Link>
+          <Link to="/cart" className="relative text-sm text-muted-foreground hover:text-foreground">
+            장바구니
+            {cartItemCount > 0 && (
+              <span className="absolute -right-3 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-destructive text-[10px] font-bold text-destructive-foreground">
+                {cartItemCount > 99 ? '99+' : cartItemCount}
+              </span>
+            )}
           </Link>
 
           {isAuthenticated ? (

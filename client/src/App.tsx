@@ -10,6 +10,9 @@ import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
 import AdminProductsPage from '@/pages/admin/AdminProductsPage';
 import AdminProductFormPage from '@/pages/admin/AdminProductFormPage';
+import ProductListPage from '@/pages/shop/ProductListPage';
+import ProductDetailPage from '@/pages/shop/ProductDetailPage';
+import CartPage from '@/pages/shop/CartPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -35,8 +38,9 @@ function App() {
             {/* Shop 라우트 */}
             <Route element={<ShopLayout />}>
               <Route path="/" element={<div>Home</div>} />
-              <Route path="/products" element={<div>Products</div>} />
-              <Route path="/products/:id" element={<div>Product Detail</div>} />
+              <Route path="/products" element={<ProductListPage />} />
+              <Route path="/products/:id" element={<ProductDetailPage />} />
+              <Route path="/cart" element={<CartPage />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/order" element={<div>Order</div>} />
                 <Route path="/checkout" element={<div>Checkout</div>} />

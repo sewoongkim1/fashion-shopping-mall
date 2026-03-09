@@ -31,7 +31,7 @@ export function useAuth() {
       const user = res.data.data!;
       setUser(user);
       queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
-      navigate(user.role === 'ADMIN' ? '/admin/dashboard' : '/');
+      navigate(user.role === 'ADMIN' ? '/admin/dashboard' : '/products');
     },
   });
 
@@ -40,7 +40,7 @@ export function useAuth() {
     onSuccess: (res) => {
       setUser(res.data.data!);
       queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
-      navigate('/');
+      navigate('/products');
     },
   });
 
