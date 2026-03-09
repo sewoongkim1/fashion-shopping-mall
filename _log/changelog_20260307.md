@@ -195,3 +195,130 @@
 보완 필요: Phase 2 개발 착수 (상품 관리 기능)
 교훈: client 폴더에 별도 .git이 있으면 embedded repo 경고 발생 — .git 제거 후 정상 커밋 가능
 ---END LOG---
+
+## 9. Phase 2 - Task 1: 상품 CRUD API
+
+### Server API
+- `src/validations/product.validation.ts` — Zod 스키마 (createProduct, updateProduct, productListQuery)
+- `src/services/product.service.ts` — ProductService 클래스 (create, findAll, findById, update, delete)
+- `src/controllers/product.controller.ts` — ProductController (CRUD 핸들러, 404 에러 처리)
+- `src/routes/product.routes.ts` — Public(GET) + Admin(POST/PUT/DELETE) 라우트 분리
+- `app.ts`에 `/api/products` 라우트 등록
+
+**API 엔드포인트:**
+| Method | Endpoint | 권한 | 설명 |
+|--------|----------|------|------|
+| GET | /api/products | Public | 상품 목록 (category, search, sort, page, limit) |
+| GET | /api/products/:id | Public | 상품 상세 (이미지, 옵션 포함) |
+| POST | /api/products | Admin | 상품 등록 (이미지/옵션 동시 생성) |
+| PUT | /api/products/:id | Admin | 상품 수정 (이미지/옵션 교체, $transaction) |
+| DELETE | /api/products/:id | Admin | 소프트 삭제 (isDeleted = true) |
+
+### 주요 기능
+- 페이지네이션: page/limit 기반, PaginatedResponse 타입 활용
+- 검색: name/description 대소문자 무시 검색
+- 필터: category, status
+- 정렬: latest(기본), price_asc, price_desc, name
+- 소프트 삭제: 주문 이력 참조 무결성 보장
+- 트랜잭션: 수정 시 이미지/옵션 전체 교체를 prisma.$transaction으로 처리
+
+### 빌드 검증
+- Server `tsc --noEmit`: 통과
+
+---LOG---
+작업: Phase 2 Task 1 상품 CRUD API
+입력 Context: instruction/init.md, docs/PRD.md, instruction/core.md
+결과: 성공
+생성 파일: server/src/validations/product.validation.ts, server/src/services/product.service.ts, server/src/controllers/product.controller.ts, server/src/routes/product.routes.ts
+수정 파일: server/src/app.ts
+주요 결정사항: 이미지/옵션 수정 시 전체 교체 방식 (delete + create), Express 5 req.params 타입 대응 (as string 캐스팅)
+보완 필요: Phase 2 Task 2 (Admin 상품 관리 페이지) 진행
+교훈: Express 5에서 req.params.id 타입이 string | string[]로 변경됨 — Request<{ id: string }> 제네릭 사용 시 라우트 핸들러와 타입 불일치 발생, as string 캐스팅으로 해결
+---END LOG---
+
+## 10. Phase 2 - Task 2: Admin 상품 관리 페이지
+
+### shadcn/ui 컴포넌트 추가
+- Table, Select, Badge, Dialog, Textarea 컴포넌트 설치
+
+### Client API & Hooks
+- `src/api/product.api.ts` — 상품 API 함수 (getList, getById, create, update, delete)
+- `src/hooks/useProducts.ts` — TanStack Query 훅 (useProductList, useProduct, useCreateProduct, useUpdateProduct, useDeleteProduct)
+
+### Admin 상품 목록 페이지 (`AdminProductsPage.tsx`)
+- 와이어프레임 기반 구현
+- 상단: "상품 관리" 타이틀 + "새 상품 등록" 버튼
+- 필터: 카테고리 Select + 검색 Input + 검색 버튼
+- 테이블: 이미지 썸네일, 상품명, 카테고리, 가격, 할인가, 상태(Badge), 등록일, 관리(수정/삭제)
+- 페이지네이션: 이전/다음 + 페이지 번호 버튼
+- 삭제 확인 Dialog
+
+### Admin 상품 등록/수정 페이지 (`AdminProductFormPage.tsx`)
+- 등록/수정 공용 폼 (useParams로 id 유무에 따라 분기)
+- 기본 정보: 상품명, 설명(Textarea), 카테고리(Select), 상태(Select), 가격, 할인가
+- 이미지 관리: URL 입력 방식, 순서 지정, 동적 추가/삭제
+- 옵션 관리: 컬러/사이즈/재고, 동적 추가/삭제
+- React Hook Form + Zod 유효성 검증
+
+### App.tsx 라우트 추가
+- `/admin/products` → AdminProductsPage
+- `/admin/products/new` → AdminProductFormPage (등록)
+- `/admin/products/:id/edit` → AdminProductFormPage (수정)
+
+### 빌드 검증
+- Client `tsc --noEmit`: 통과
+
+---LOG---
+작업: Phase 2 Task 2 Admin 상품 관리 페이지
+입력 Context: instruction/init.md, wireframe 이미지, docs/PRD.md
+결과: 성공
+생성 파일: client/src/api/product.api.ts, client/src/hooks/useProducts.ts, client/src/pages/admin/AdminProductsPage.tsx, client/src/pages/admin/AdminProductFormPage.tsx
+수정 파일: client/src/App.tsx
+shadcn/ui 추가: table, select, badge, dialog, textarea
+주요 결정사항: 이미지는 URL 입력 방식 (S3 업로드는 별도 Phase), 등록/수정 공용 폼 컴포넌트, 삭제 시 Dialog 확인
+보완 필요: Phase 2 Task 3 (이미지 업로드 기능) 진행
+교훈: 없음
+---END LOG---
+
+## 11. 보완 B: Cloudinary 이미지 업로드 기능 추가
+
+### Server
+- `cloudinary`, `multer`, `@types/multer` 패키지 설치
+- `src/config/cloudinary.ts` — Cloudinary 설정 (lazy 초기화 패턴)
+- `src/services/upload.service.ts` — 이미지 업로드/삭제 서비스 (upload_stream, 자동 리사이즈 1200x1200)
+- `src/controllers/upload.controller.ts` — 단일/다중 업로드 컨트롤러
+- `src/routes/upload.routes.ts` — Admin 전용 업로드 라우트
+- `app.ts`에 `/api/upload` 라우트 등록
+- `prisma/seed.ts`에 dotenv 로드 추가
+
+**API 엔드포인트:**
+| Method | Endpoint | 권한 | 설명 |
+|--------|----------|------|------|
+| POST | /api/upload/image | Admin | 단일 이미지 업로드 (5MB 제한) |
+| POST | /api/upload/images | Admin | 다중 이미지 업로드 (최대 10장) |
+
+### Client
+- `src/api/upload.api.ts` — 업로드 API 함수 (FormData 방식)
+- `AdminProductFormPage.tsx` 이미지 섹션 개선:
+  - 파일 업로드 버튼 (Cloudinary에 직접 업로드)
+  - URL 직접 입력 옵션 (Enter 또는 버튼으로 추가)
+  - 이미지 미리보기 썸네일
+  - 정렬 순서 자동 부여 (수동 입력 제거)
+  - 삭제 시 순서 자동 재정렬
+
+### .env 설정 추가
+- `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`
+
+### 버그 수정
+- Cloudinary config가 dotenv 로드 전에 실행되는 문제 → lazy 초기화 패턴(`getCloudinary()`)으로 해결
+
+---LOG---
+작업: 보완 B - Cloudinary 이미지 업로드 기능 추가
+입력 Context: instruction/init.md (16~18), instruction/core.md
+결과: 성공
+생성 파일: server/src/config/cloudinary.ts, server/src/services/upload.service.ts, server/src/controllers/upload.controller.ts, server/src/routes/upload.routes.ts, client/src/api/upload.api.ts
+수정 파일: server/src/app.ts, server/prisma/seed.ts, server/package.json, client/src/pages/admin/AdminProductFormPage.tsx, server/.env, instruction/init.md
+주요 결정사항: Cloudinary upload_stream 방식 (multer memoryStorage → stream), 이미지 자동 최적화 (quality:auto, fetch_format:auto), 5MB 제한
+보완 필요: 없음
+교훈: ES module import 시 cloudinary.config()가 dotenv 전에 실행될 수 있음 — lazy 초기화 패턴 필수
+---END LOG---

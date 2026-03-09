@@ -8,6 +8,8 @@ import ProtectedRoute from '@/routes/ProtectedRoute';
 import AdminRoute from '@/routes/AdminRoute';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
+import AdminProductsPage from '@/pages/admin/AdminProductsPage';
+import AdminProductFormPage from '@/pages/admin/AdminProductFormPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -46,7 +48,9 @@ function App() {
               <Route element={<AdminLayout />}>
                 <Route path="/admin/dashboard" element={<div>Admin Dashboard</div>} />
                 <Route path="/admin/users" element={<div>Member List</div>} />
-                <Route path="/admin/products" element={<div>Admin Products</div>} />
+                <Route path="/admin/products" element={<AdminProductsPage />} />
+                <Route path="/admin/products/new" element={<AdminProductFormPage />} />
+                <Route path="/admin/products/:id/edit" element={<AdminProductFormPage />} />
                 <Route path="/admin/orders" element={<div>Admin Orders</div>} />
               </Route>
             </Route>

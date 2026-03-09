@@ -612,9 +612,9 @@ Product (1) ──── (*) ProductOption
 5. 공통 레이아웃 (ShopLayout, AdminLayout, AuthLayout)
 
 ### Phase 2 - 상품
-6. 상품 CRUD API
+6. 상품 CRUD API 
 7. Admin 상품 관리 페이지
-8. 이미지 업로드 (S3)
+8. 이미지 업로드 (Cloudinary Site 활용)
 9. 상품 리스트 페이지 (필터, 정렬, 페이지네이션)
 10. 상품 상세 페이지
 
