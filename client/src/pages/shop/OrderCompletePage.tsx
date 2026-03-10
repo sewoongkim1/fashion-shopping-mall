@@ -16,6 +16,16 @@ const STATUS_LABEL: Record<string, string> = {
   CANCELLED: '주문 취소',
 };
 
+const PAYMENT_METHOD_LABEL: Record<string, string> = {
+  card: '신용카드',
+  trans: '실시간 계좌이체',
+  vbank: '가상계좌',
+  phone: '휴대폰 소액결제',
+  kakaopay: '카카오페이',
+  tosspay: '토스페이',
+  naverpay: '네이버페이',
+};
+
 export default function OrderCompletePage() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -116,9 +126,19 @@ export default function OrderCompletePage() {
                     {formatPrice(order.totalAmount + order.shippingFee)}
                   </span>
                 </div>
+                {order.payment && (
+                  <div className="flex justify-between">
+                    <span className="text-muted-foreground">결제 수단</span>
+                    <span className="font-medium">
+                      {PAYMENT_METHOD_LABEL[order.payment.method] || order.payment.method}
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">주문 상태</span>
-                  <span className="font-medium">{STATUS_LABEL[order.status] || order.status}</span>
+                  <span className="font-medium text-green-600">
+                    {STATUS_LABEL[order.status] || order.status}
+                  </span>
                 </div>
               </div>
             </div>

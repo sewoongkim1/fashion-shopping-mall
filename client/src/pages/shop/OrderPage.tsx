@@ -18,7 +18,7 @@ export default function OrderPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuthStore();
-  const { items: cartItems, clearCart } = useCartStore();
+  const { items: cartItems } = useCartStore();
 
   // 즉시구매 또는 장바구니에서 온 상품
   const orderItems: CartItem[] = location.state?.orderItems || cartItems;
@@ -39,15 +39,14 @@ export default function OrderPage() {
   const shippingFee = totalPrice >= 50000 ? 0 : 3000;
   const totalAmount = totalPrice + shippingFee;
 
+  const fromCart = !location.state?.orderItems;
+
   const createOrderMutation = useMutation({
     mutationFn: (data: CreateOrderRequest) => orderApi.create(data),
     onSuccess: (res) => {
       const order = res.data.data;
-      // 장바구니에서 온 경우 장바구니 비우기
-      if (!location.state?.orderItems) {
-        clearCart();
-      }
-      navigate('/order/complete', { state: { order }, replace: true });
+      // 결제 페이지로 이동 (장바구니 비우기는 결제 완료 후 처리)
+      navigate('/payment', { state: { order, fromCart }, replace: true });
     },
     onError: (err: any) => {
       const message = err.response?.data?.message || '주문 생성에 실패했습니다.';

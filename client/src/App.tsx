@@ -15,6 +15,7 @@ import ProductDetailPage from '@/pages/shop/ProductDetailPage';
 import CartPage from '@/pages/shop/CartPage';
 import OrderPage from '@/pages/shop/OrderPage';
 import OrderCompletePage from '@/pages/shop/OrderCompletePage';
+import PaymentPage from '@/pages/shop/PaymentPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -45,8 +46,8 @@ function App() {
               <Route path="/cart" element={<CartPage />} />
               <Route element={<ProtectedRoute />}>
                 <Route path="/order" element={<OrderPage />} />
+                <Route path="/payment" element={<PaymentPage />} />
                 <Route path="/order/complete" element={<OrderCompletePage />} />
-                <Route path="/checkout" element={<div>Checkout</div>} />
               </Route>
             </Route>
 
