@@ -31,7 +31,7 @@ class AdminController {
   /** PATCH /api/admin/users/:id/toggle-active */
   async toggleUserActive(req: AuthRequest, res: Response, next: NextFunction) {
     try {
-      const user = await adminService.toggleUserActive(req.params.id);
+      const user = await adminService.toggleUserActive(req.params.id as string);
       res.json({ success: true, data: user });
     } catch (err) {
       next(err);
@@ -46,7 +46,7 @@ class AdminController {
         res.status(400).json({ success: false, message: '유효하지 않은 역할입니다.' });
         return;
       }
-      const user = await adminService.updateUserRole(req.params.id, role);
+      const user = await adminService.updateUserRole(req.params.id as string, role);
       res.json({ success: true, data: user });
     } catch (err) {
       next(err);
@@ -68,11 +68,25 @@ class AdminController {
     }
   }
 
+  /** GET /api/admin/orders/:id */
+  async getOrderDetail(req: AuthRequest, res: Response, next: NextFunction) {
+    try {
+      const order = await adminService.getOrderDetail(req.params.id as string);
+      res.json({ success: true, data: order });
+    } catch (err) {
+      if (err instanceof Error && err.message === '주문을 찾을 수 없습니다.') {
+        res.status(404).json({ success: false, message: err.message });
+        return;
+      }
+      next(err);
+    }
+  }
+
   /** PATCH /api/admin/orders/:id/status */
   async updateOrderStatus(req: AuthRequest, res: Response, next: NextFunction) {
     try {
       const { status } = req.body;
-      const order = await adminService.updateOrderStatus(req.params.id, status);
+      const order = await adminService.updateOrderStatus(req.params.id as string, status);
       res.json({ success: true, data: order });
     } catch (err) {
       next(err);

@@ -32,6 +32,9 @@ export const adminApi = {
   getOrders: (params?: { page?: number; limit?: number; search?: string; status?: string }) =>
     client.get<ApiResponse<PaginatedResponse<Order & { user: { name: string; email: string } }>>>('/api/admin/orders', { params }),
 
+  getOrderDetail: (id: string) =>
+    client.get<ApiResponse<Order & { user: { id: string; name: string; email: string; phone?: string } }>>(`/api/admin/orders/${id}`),
+
   updateOrderStatus: (id: string, status: string) =>
     client.patch<ApiResponse<Order>>(`/api/admin/orders/${id}/status`, { status }),
 };

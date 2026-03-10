@@ -225,6 +225,20 @@ export class AdminService {
     };
   }
 
+  /** 주문 상세 조회 */
+  async getOrderDetail(orderId: string) {
+    const order = await prisma.order.findUnique({
+      where: { id: orderId },
+      include: {
+        items: true,
+        user: { select: { id: true, name: true, email: true, phone: true } },
+        payment: true,
+      },
+    });
+    if (!order) throw new Error('주문을 찾을 수 없습니다.');
+    return order;
+  }
+
   /** 주문 상태 변경 */
   async updateOrderStatus(orderId: string, status: string) {
     const validStatuses = ['PENDING', 'PAID', 'PREPARING', 'SHIPPING', 'DELIVERED', 'CANCELLED'];

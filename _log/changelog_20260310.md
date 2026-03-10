@@ -138,3 +138,32 @@
   - 상태 변경 드롭다운 (색상 구분)
   - 주문 상세 확장 패널 (주문 상품 목록, 금액 합계, 배송 정보, 결제 수단)
   - 페이지네이션
+
+---
+
+## Task 21. Phase 4 - Admin 주문 관리 상세 페이지
+
+### 변경 파일 (서버)
+- `server/src/services/admin.service.ts` (수정 — `getOrderDetail()` 메서드 추가)
+- `server/src/controllers/admin.controller.ts` (수정 — `GET /api/admin/orders/:id` 엔드포인트, Express 5 타입 수정)
+- `server/src/routes/admin.routes.ts` (수정 — 주문 상세 라우트 추가)
+
+### 변경 파일 (클라이언트)
+- `client/src/api/admin.api.ts` (수정 — `getOrderDetail()` 함수 추가)
+- `client/src/pages/admin/AdminOrderDetailPage.tsx` (신규)
+- `client/src/pages/admin/AdminOrdersPage.tsx` (수정 — 주문번호 클릭 링크 추가)
+- `client/src/App.tsx` (수정 — `/admin/orders/:id` 라우트 추가)
+
+### 보완 수정
+- `server/src/app.ts` (수정 — CORS origin 다중 포트 허용)
+
+### 구현 내용
+- **주문 상세 API** (`GET /api/admin/orders/:id`): 주문 + 유저 + 결제 + 상품 정보 포함 조회
+- **주문 상세 페이지** (`/admin/orders/:id`):
+  - 주문 기본 정보 (주문번호, 일시, 주문자, 연락처)
+  - 주문 상품 테이블 (상품명, 옵션, 수량, 단가, 소계, 합계)
+  - 배송 정보 (수령인, 연락처, 주소, 메모)
+  - 결제 정보 (수단, 금액, 상태, 승인일, 결제키)
+  - 주문 상태 변경 버튼 (6개 상태)
+- **목록→상세 연결**: 주문 목록에서 주문번호 클릭 시 상세 페이지 이동
+- **CORS 수정**: 개발 환경 다중 포트(5173~5176) 허용

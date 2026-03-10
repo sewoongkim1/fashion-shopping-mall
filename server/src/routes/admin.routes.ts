@@ -11,6 +11,7 @@ router.get('/users', authMiddleware, roleMiddleware('ADMIN'), (req, res, next) =
 router.patch('/users/:id/toggle-active', authMiddleware, roleMiddleware('ADMIN'), (req, res, next) => adminController.toggleUserActive(req, res, next));
 router.patch('/users/:id/role', authMiddleware, roleMiddleware('ADMIN'), (req, res, next) => adminController.updateUserRole(req, res, next));
 router.get('/orders', authMiddleware, roleMiddleware('ADMIN'), (req, res, next) => adminController.getOrders(req, res, next));
+router.get('/orders/:id', authMiddleware, roleMiddleware('ADMIN'), (req, res, next) => adminController.getOrderDetail(req, res, next));
 router.patch('/orders/:id/status', authMiddleware, roleMiddleware('ADMIN'), (req, res, next) => adminController.updateOrderStatus(req, res, next));
 
 export default router;

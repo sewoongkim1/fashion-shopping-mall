@@ -30,3 +30,5 @@ B. 이미지 upload 기능 추가
 18. Phase 4 - Admin -- 1.Admin 대시보드 (매출, 통계)
 19. Phase 4 - Admin -- 2.Admin 회원 관리
 20. Phase 4 - Admin -- 3.Admin 주문 관리 (상태 변경)
+21. Phase 4 - Admin -- 4.Admin 주문 관리 상세 페이지 
+      -  주문관리 페이지에서 주문 상세페이지 연결

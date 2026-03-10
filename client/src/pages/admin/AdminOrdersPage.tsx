@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { adminApi } from '@/api/admin.api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -145,7 +146,14 @@ export default function AdminOrdersPage() {
 
                   return (
                     <tr key={order.id} className="border-b hover:bg-muted/30">
-                      <td className="px-4 py-3 font-mono text-xs">{order.orderNumber}</td>
+                      <td className="px-4 py-3 font-mono text-xs">
+                        <Link
+                          to={`/admin/orders/${order.id}`}
+                          className="text-primary hover:underline"
+                        >
+                          {order.orderNumber}
+                        </Link>
+                      </td>
                       <td className="px-4 py-3">
                         <p className="font-medium">{order.user?.name || '-'}</p>
                         <p className="text-xs text-muted-foreground">{order.user?.email}</p>
