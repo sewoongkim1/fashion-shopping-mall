@@ -8,8 +8,11 @@ import ProtectedRoute from '@/routes/ProtectedRoute';
 import AdminRoute from '@/routes/AdminRoute';
 import LoginPage from '@/pages/auth/LoginPage';
 import RegisterPage from '@/pages/auth/RegisterPage';
+import AdminDashboardPage from '@/pages/admin/AdminDashboardPage';
+import AdminUsersPage from '@/pages/admin/AdminUsersPage';
 import AdminProductsPage from '@/pages/admin/AdminProductsPage';
 import AdminProductFormPage from '@/pages/admin/AdminProductFormPage';
+import AdminOrdersPage from '@/pages/admin/AdminOrdersPage';
 import ProductListPage from '@/pages/shop/ProductListPage';
 import ProductDetailPage from '@/pages/shop/ProductDetailPage';
 import CartPage from '@/pages/shop/CartPage';
@@ -54,12 +57,12 @@ function App() {
             {/* Admin 라우트 */}
             <Route element={<AdminRoute />}>
               <Route element={<AdminLayout />}>
-                <Route path="/admin/dashboard" element={<div>Admin Dashboard</div>} />
-                <Route path="/admin/users" element={<div>Member List</div>} />
+                <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
+                <Route path="/admin/users" element={<AdminUsersPage />} />
                 <Route path="/admin/products" element={<AdminProductsPage />} />
                 <Route path="/admin/products/new" element={<AdminProductFormPage />} />
                 <Route path="/admin/products/:id/edit" element={<AdminProductFormPage />} />
-                <Route path="/admin/orders" element={<div>Admin Orders</div>} />
+                <Route path="/admin/orders" element={<AdminOrdersPage />} />
               </Route>
             </Route>
           </Routes>

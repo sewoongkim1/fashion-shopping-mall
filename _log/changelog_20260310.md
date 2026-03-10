@@ -74,3 +74,67 @@
 - **재고 차감**: Prisma `$transaction` 내에서 `stock: { decrement: quantity }` 원자적 차감
 - **트랜잭션 보장**: 재고 차감과 주문 생성이 같은 트랜잭션 내에서 처리되어 데이터 일관성 보장
 - 추가 수정 불필요 — 정상 동작 확인 완료
+
+---
+
+## Task 18. Phase 4 - Admin 대시보드 (매출, 통계)
+
+### 변경 파일 (서버)
+- `server/src/services/admin.service.ts` (신규) — AdminService 클래스
+- `server/src/controllers/admin.controller.ts` (신규) — AdminController 클래스
+- `server/src/routes/admin.routes.ts` (신규) — Admin API 라우트
+- `server/src/app.ts` (수정 — `/api/admin` 라우트 등록)
+
+### 변경 파일 (클라이언트)
+- `client/src/api/admin.api.ts` (신규) — Admin API 클라이언트
+- `client/src/pages/admin/AdminDashboardPage.tsx` (신규)
+- `client/src/App.tsx` (수정 — Admin 라우트 추가)
+
+### 구현 내용
+- **대시보드 통계 API** (`GET /api/admin/dashboard`):
+  - 전체 회원/상품/주문 수, 전체 매출, 오늘 주문/매출
+  - 주문 상태별 카운트 (PENDING~CANCELLED)
+  - 최근 주문 5건, 최근 6개월 월별 매출 추이
+- **대시보드 UI**:
+  - 통계 카드 6개 (총 매출, 오늘 매출, 총 주문, 오늘 주문, 총 회원, 총 상품)
+  - 주문 상태별 현황 그리드
+  - 월별 매출 바 차트 (CSS 기반)
+  - 최근 주문 리스트 (주문자, 상품, 금액, 상태)
+- **인증/인가**: authMiddleware + roleMiddleware('ADMIN') 적용
+
+---
+
+## Task 19. Phase 4 - Admin 회원 관리
+
+### 변경 파일
+- `server/src/services/admin.service.ts` (수정 — 회원 조회/상태/역할 변경)
+- `server/src/controllers/admin.controller.ts` (수정 — 회원 API 엔드포인트)
+- `server/src/routes/admin.routes.ts` (수정 — 회원 관리 라우트)
+- `client/src/api/admin.api.ts` (수정 — 회원 관리 API 함수)
+- `client/src/pages/admin/AdminUsersPage.tsx` (신규)
+
+### 구현 내용
+- **회원 목록 API** (`GET /api/admin/users`): 페이지네이션, 이름/이메일 검색, 역할 필터
+- **회원 상태 토글** (`PATCH /api/admin/users/:id/toggle-active`): 활성/비활성 전환
+- **회원 역할 변경** (`PATCH /api/admin/users/:id/role`): USER/ADMIN 변경
+- **회원 관리 UI**: 검색, 역할 필터, 회원 테이블 (이름, 이메일, 역할, 주문수, 상태, 가입일), 페이지네이션
+
+---
+
+## Task 20. Phase 4 - Admin 주문 관리 (상태 변경)
+
+### 변경 파일
+- `server/src/services/admin.service.ts` (수정 — 주문 조회/상태 변경)
+- `server/src/controllers/admin.controller.ts` (수정 — 주문 API 엔드포인트)
+- `server/src/routes/admin.routes.ts` (수정 — 주문 관리 라우트)
+- `client/src/api/admin.api.ts` (수정 — 주문 관리 API 함수)
+- `client/src/pages/admin/AdminOrdersPage.tsx` (신규)
+
+### 구현 내용
+- **주문 목록 API** (`GET /api/admin/orders`): 페이지네이션, 주문번호/수령인/회원명 검색, 상태 필터
+- **주문 상태 변경** (`PATCH /api/admin/orders/:id/status`): 6개 상태 (PENDING~CANCELLED)
+- **주문 관리 UI**:
+  - 검색, 상태 필터, 주문 테이블 (주문번호, 주문자, 상품, 금액, 상태, 일시)
+  - 상태 변경 드롭다운 (색상 구분)
+  - 주문 상세 확장 패널 (주문 상품 목록, 금액 합계, 배송 정보, 결제 수단)
+  - 페이지네이션

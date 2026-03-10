@@ -23,11 +23,13 @@ import productRoutes from './routes/product.routes';
 import uploadRoutes from './routes/upload.routes';
 import orderRoutes from './routes/order.routes';
 import paymentRoutes from './routes/payment.routes';
+import adminRoutes from './routes/admin.routes';
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Global error handler
 import { errorMiddleware } from './middlewares/error.middleware';
