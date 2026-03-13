@@ -35,7 +35,7 @@ app.use('/api/admin', adminRoutes);
 
 // 404 handler (매칭되지 않은 API 라우트)
 import { errorMiddleware, notFoundMiddleware } from './middlewares/error.middleware';
-app.use('/api/*', notFoundMiddleware);
+app.use('/api/{*splat}', notFoundMiddleware);
 
 // Global error handler
 app.use(errorMiddleware);

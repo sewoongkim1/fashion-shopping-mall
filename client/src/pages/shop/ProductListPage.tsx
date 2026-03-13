@@ -113,7 +113,7 @@ export default function ProductListPage() {
             </Button>
           </form>
 
-          <Select value={sort} onValueChange={(v) => updateParams({ sort: v })}>
+          <Select value={sort} onValueChange={(v: string | null) => v && updateParams({ sort: v })}>
             <SelectTrigger className="w-40">
               <SelectValue />
             </SelectTrigger>

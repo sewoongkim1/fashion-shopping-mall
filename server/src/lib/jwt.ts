@@ -28,8 +28,12 @@ export function verifyRefreshToken(token: string): AuthUser {
   return jwt.verify(token, REFRESH_SECRET) as AuthUser;
 }
 
-export const COOKIE_OPTIONS = {
+export const COOKIE_OPTIONS: {
+  httpOnly: boolean;
+  secure: boolean;
+  sameSite: 'lax' | 'none';
+} = {
   httpOnly: true,
   secure: process.env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
+  sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
 };

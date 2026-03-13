@@ -77,7 +77,7 @@ export default function AdminProductFormPage() {
     reset,
     formState: { errors },
   } = useForm<ProductFormValues>({
-    resolver: zodResolver(productFormSchema),
+    resolver: zodResolver(productFormSchema) as any,
     defaultValues: {
       name: '',
       description: '',
@@ -182,7 +182,7 @@ export default function AdminProductFormPage() {
         </Button>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit as any)} className="space-y-6">
         {/* Basic Info */}
         <Card>
           <CardHeader>
@@ -211,7 +211,7 @@ export default function AdminProductFormPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>카테고리</Label>
-                <Select value={watch('category')} onValueChange={(v) => setValue('category', v as Category)}>
+                <Select value={watch('category')} onValueChange={(v: string | null) => v && setValue('category', v as Category)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -227,7 +227,7 @@ export default function AdminProductFormPage() {
 
               <div className="space-y-2">
                 <Label>상태</Label>
-                <Select value={watch('status')} onValueChange={(v) => setValue('status', v as ProductStatus)}>
+                <Select value={watch('status')} onValueChange={(v: string | null) => v && setValue('status', v as ProductStatus)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>

@@ -1,19 +1,27 @@
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
+import { orderApi } from '@/api/order.api';
 import { Button } from '@/components/ui/button';
-import type { Order } from '@/types';
+import { PageLoading } from '@/components/ui/loading-spinner';
+import type { OrderStatus } from '@/types';
 
-function formatPrice(price: number) {
-  return price.toLocaleString('ko-KR') + '원';
-}
-
-const STATUS_LABEL: Record<string, string> = {
+const STATUS_LABEL: Record<OrderStatus, string> = {
   PENDING: '결제 대기',
   PAID: '결제 완료',
   PREPARING: '상품 준비중',
   SHIPPING: '배송중',
   DELIVERED: '배송 완료',
   CANCELLED: '주문 취소',
+};
+
+const STATUS_COLOR: Record<OrderStatus, string> = {
+  PENDING: 'text-yellow-600 bg-yellow-50',
+  PAID: 'text-blue-600 bg-blue-50',
+  PREPARING: 'text-indigo-600 bg-indigo-50',
+  SHIPPING: 'text-purple-600 bg-purple-50',
+  DELIVERED: 'text-green-600 bg-green-50',
+  CANCELLED: 'text-red-600 bg-red-50',
 };
 
 const PAYMENT_METHOD_LABEL: Record<string, string> = {
@@ -26,17 +34,40 @@ const PAYMENT_METHOD_LABEL: Record<string, string> = {
   naverpay: '네이버페이',
 };
 
-export default function OrderCompletePage() {
+function formatPrice(price: number) {
+  return price.toLocaleString('ko-KR') + '원';
+}
+
+function formatDate(dateStr: string) {
+  return new Date(dateStr).toLocaleDateString('ko-KR', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+export default function MyOrderDetailPage() {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const location = useLocation();
-  const order = location.state?.order as Order | undefined;
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['myOrder', id],
+    queryFn: () => orderApi.getById(id!),
+    enabled: !!id,
+  });
+
+  const order = data?.data?.data;
+
+  if (isLoading) return <PageLoading message="주문 정보를 불러오는 중..." />;
 
   if (!order) {
     return (
       <div className="container mx-auto px-4 py-20 text-center">
         <p className="text-muted-foreground">주문 정보를 찾을 수 없습니다.</p>
-        <Button variant="outline" className="mt-4" onClick={() => navigate('/')}>
-          홈으로 돌아가기
+        <Button variant="outline" className="mt-4" onClick={() => navigate('/my-orders')}>
+          주문 내역으로
         </Button>
       </div>
     );
@@ -45,25 +76,24 @@ export default function OrderCompletePage() {
   return (
     <>
       <Helmet>
-        <title>주문 완료 - Fashion Mall</title>
+        <title>주문 상세 - Fashion Mall</title>
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">
         <div className="mx-auto max-w-2xl">
-          {/* 주문 완료 헤더 */}
-          <div className="mb-8 text-center">
-            <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-              <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
+          {/* 헤더 */}
+          <div className="mb-6 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h1 className="text-2xl font-bold">주문 상세</h1>
+              <p className="mt-1 font-mono text-sm text-muted-foreground">{order.orderNumber}</p>
             </div>
-            <h1 className="text-2xl font-bold">주문이 완료되었습니다</h1>
-            <p className="mt-2 text-muted-foreground">
-              주문번호: <span className="font-mono font-semibold">{order.orderNumber}</span>
-            </p>
+            <span
+              className={`inline-block w-fit rounded-full px-3 py-1 text-sm font-medium ${STATUS_COLOR[order.status]}`}
+            >
+              {STATUS_LABEL[order.status]}
+            </span>
           </div>
 
-          {/* 주문 상세 */}
           <div className="space-y-6">
             {/* 주문 상품 */}
             <div className="rounded-lg border bg-card p-6">
@@ -77,7 +107,9 @@ export default function OrderCompletePage() {
                         ({item.optionColor}/{item.optionSize}) x {item.quantity}
                       </span>
                     </div>
-                    <span className="font-medium">{formatPrice(item.price * item.quantity)}</span>
+                    <span className="ml-4 shrink-0 font-medium">
+                      {formatPrice(item.price * item.quantity)}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -88,27 +120,27 @@ export default function OrderCompletePage() {
               <h2 className="mb-4 font-semibold">배송 정보</h2>
               <dl className="space-y-2 text-sm">
                 <div className="flex">
-                  <dt className="w-24 text-muted-foreground">수령인</dt>
+                  <dt className="w-24 shrink-0 text-muted-foreground">수령인</dt>
                   <dd>{order.recipientName}</dd>
                 </div>
                 <div className="flex">
-                  <dt className="w-24 text-muted-foreground">연락처</dt>
+                  <dt className="w-24 shrink-0 text-muted-foreground">연락처</dt>
                   <dd>{order.recipientPhone}</dd>
                 </div>
                 <div className="flex">
-                  <dt className="w-24 text-muted-foreground">주소</dt>
+                  <dt className="w-24 shrink-0 text-muted-foreground">주소</dt>
                   <dd>({order.zipCode}) {order.address} {order.addressDetail}</dd>
                 </div>
                 {order.deliveryMemo && (
                   <div className="flex">
-                    <dt className="w-24 text-muted-foreground">배송 메모</dt>
+                    <dt className="w-24 shrink-0 text-muted-foreground">배송 메모</dt>
                     <dd>{order.deliveryMemo}</dd>
                   </div>
                 )}
               </dl>
             </div>
 
-            {/* 결제 요약 */}
+            {/* 결제 정보 */}
             <div className="rounded-lg border bg-card p-6">
               <h2 className="mb-4 font-semibold">결제 정보</h2>
               <div className="space-y-2 text-sm">
@@ -127,18 +159,22 @@ export default function OrderCompletePage() {
                   </span>
                 </div>
                 {order.payment && (
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">결제 수단</span>
-                    <span className="font-medium">
-                      {PAYMENT_METHOD_LABEL[order.payment.method] || order.payment.method}
-                    </span>
-                  </div>
+                  <>
+                    <div className="flex justify-between">
+                      <span className="text-muted-foreground">결제 수단</span>
+                      <span>{PAYMENT_METHOD_LABEL[order.payment.method] || order.payment.method}</span>
+                    </div>
+                    {order.payment.approvedAt && (
+                      <div className="flex justify-between">
+                        <span className="text-muted-foreground">결제 일시</span>
+                        <span>{formatDate(order.payment.approvedAt)}</span>
+                      </div>
+                    )}
+                  </>
                 )}
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">주문 상태</span>
-                  <span className="font-medium text-green-600">
-                    {STATUS_LABEL[order.status] || order.status}
-                  </span>
+                  <span className="text-muted-foreground">주문 일시</span>
+                  <span>{formatDate(order.createdAt)}</span>
                 </div>
               </div>
             </div>
@@ -146,16 +182,12 @@ export default function OrderCompletePage() {
 
           {/* 버튼 */}
           <div className="mt-8 flex gap-4">
-            <Link to="/products" className="flex-1">
-              <Button variant="outline" className="w-full">
-                쇼핑 계속하기
-              </Button>
-            </Link>
-            <Link to="/my-orders" className="flex-1">
-              <Button className="w-full">
-                주문 내역 보기
-              </Button>
-            </Link>
+            <Button variant="outline" className="flex-1" onClick={() => navigate('/my-orders')}>
+              주문 내역으로
+            </Button>
+            <Button className="flex-1" onClick={() => navigate('/products')}>
+              쇼핑 계속하기
+            </Button>
           </div>
         </div>
       </div>

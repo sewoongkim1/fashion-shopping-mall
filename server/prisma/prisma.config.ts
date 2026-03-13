@@ -16,7 +16,7 @@ export default defineConfig({
   migrate: {
     async resolve() {
       return {
-        url: process.env.DATABASE_URL!,
+        url: process.env.DIRECT_URL || process.env.DATABASE_URL!,
       };
     },
   },

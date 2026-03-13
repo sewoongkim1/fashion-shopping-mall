@@ -85,9 +85,11 @@ export default function AdminProductsPage() {
     if (e.key === 'Enter') handleSearch();
   };
 
-  const handleCategoryChange = (value: string) => {
-    setCategory(value as Category | 'ALL');
-    setPage(1);
+  const handleCategoryChange = (value: string | null) => {
+    if (value) {
+      setCategory(value as Category | 'ALL');
+      setPage(1);
+    }
   };
 
   const handleDelete = () => {
@@ -104,8 +106,8 @@ export default function AdminProductsPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">상품 관리</h1>
-        <Button asChild>
-          <Link to="/admin/products/new">새 상품 등록</Link>
+        <Button render={<Link to="/admin/products/new" />}>
+          새 상품 등록
         </Button>
       </div>
 
@@ -194,8 +196,8 @@ export default function AdminProductsPage() {
                   <TableCell>{formatDate(product.createdAt)}</TableCell>
                   <TableCell className="text-center">
                     <div className="flex items-center justify-center gap-1">
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link to={`/admin/products/${product.id}/edit`}>수정</Link>
+                      <Button variant="ghost" size="sm" render={<Link to={`/admin/products/${product.id}/edit`} />}>
+                        수정
                       </Button>
                       <Button
                         variant="ghost"

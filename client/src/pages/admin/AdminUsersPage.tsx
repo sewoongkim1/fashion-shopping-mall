@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
-const ROLE_LABEL: Record<string, string> = { USER: '일반회원', ADMIN: '관리자' };
 
 function formatDate(dateStr: string) {
   return new Date(dateStr).toLocaleDateString('ko-KR');

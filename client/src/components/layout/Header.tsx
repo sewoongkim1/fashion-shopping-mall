@@ -68,6 +68,9 @@ export default function Header() {
 
           {isAuthenticated ? (
             <>
+              <Link to="/my-orders" className="text-sm text-muted-foreground hover:text-foreground">
+                주문내역
+              </Link>
               {user?.role === 'ADMIN' && (
                 <Link
                   to="/admin/dashboard"
@@ -115,6 +118,13 @@ export default function Header() {
 
             {isAuthenticated ? (
               <>
+                <Link
+                  to="/my-orders"
+                  className="text-sm text-muted-foreground hover:text-foreground"
+                  onClick={closeMenu}
+                >
+                  주문내역
+                </Link>
                 {user?.role === 'ADMIN' && (
                   <Link
                     to="/admin/dashboard"

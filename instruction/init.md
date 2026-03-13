@@ -30,5 +30,14 @@ B. 이미지 upload 기능 추가
 18. Phase 4 - Admin -- 1.Admin 대시보드 (매출, 통계)
 19. Phase 4 - Admin -- 2.Admin 회원 관리
 20. Phase 4 - Admin -- 3.Admin 주문 관리 (상태 변경)
-21. Phase 4 - Admin -- 4.Admin 주문 관리 상세 페이지 
+21. Phase 4 - Admin -- 4.Admin 주문 관리 상세 페이지
       -  주문관리 페이지에서 주문 상세페이지 연결
+
+22. Phase 5 - 마무리 -- 1. 미들웨어 권한 체크 정리
+23. Phase 5 - 마무리 -- 2. 에러 핸들링 및 로딩 UI
+24. Phase 5 - 마무리 -- 3.  반응형 디자인 점검
+
+
+25.  Phase 5 - 마무리 -- 4. 데이터베이스 배포 Supabase
+26.  Phase 5 - 마무리 -- 5.  Server: Railway 
+27.   

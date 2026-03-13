@@ -197,7 +197,7 @@ export default function ProductDetailPage() {
                 {/* 컬러 */}
                 <div className="space-y-2">
                   <label className="text-sm font-medium">컬러</label>
-                  <Select value={selectedColor} onValueChange={(v) => { setSelectedColor(v); setSelectedSize(''); }}>
+                  <Select value={selectedColor} onValueChange={(v: string | null) => { if (v) { setSelectedColor(v); setSelectedSize(''); } }}>
                     <SelectTrigger>
                       <SelectValue placeholder="컬러를 선택하세요" />
                     </SelectTrigger>
@@ -213,7 +213,7 @@ export default function ProductDetailPage() {
                 {selectedColor && sizes.length > 0 && (
                   <div className="space-y-2">
                     <label className="text-sm font-medium">사이즈</label>
-                    <Select value={selectedSize} onValueChange={setSelectedSize}>
+                    <Select value={selectedSize} onValueChange={(v: string | null) => v && setSelectedSize(v)}>
                       <SelectTrigger>
                         <SelectValue placeholder="사이즈를 선택하세요" />
                       </SelectTrigger>

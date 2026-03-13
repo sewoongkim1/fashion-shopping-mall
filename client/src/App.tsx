@@ -22,6 +22,8 @@ import CartPage from '@/pages/shop/CartPage';
 import OrderPage from '@/pages/shop/OrderPage';
 import OrderCompletePage from '@/pages/shop/OrderCompletePage';
 import PaymentPage from '@/pages/shop/PaymentPage';
+import MyOrdersPage from '@/pages/shop/MyOrdersPage';
+import MyOrderDetailPage from '@/pages/shop/MyOrderDetailPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 
 const queryClient = new QueryClient({
@@ -57,6 +59,8 @@ function App() {
                 <Route path="/order" element={<OrderPage />} />
                 <Route path="/payment" element={<PaymentPage />} />
                 <Route path="/order/complete" element={<OrderCompletePage />} />
+                <Route path="/my-orders" element={<MyOrdersPage />} />
+                <Route path="/my-orders/:id" element={<MyOrderDetailPage />} />
               </Route>
             </Route>
 

@@ -6,7 +6,6 @@ import { adminApi } from '@/api/admin.api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import type { OrderStatus } from '@/types';
 
 const ORDER_STATUS_LABEL: Record<string, string> = {
   PENDING: '결제대기',
