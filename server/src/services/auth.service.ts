@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import prisma from '../lib/prisma';
 import { generateAccessToken, generateRefreshToken } from '../lib/jwt';
+import { AppError } from '../lib/AppError';
 import type { RegisterInput, LoginInput } from '../validations/auth.validation';
 
 export class AuthService {
@@ -10,7 +11,7 @@ export class AuthService {
     });
 
     if (existing) {
-      throw new Error('이미 사용 중인 이메일입니다.');
+      throw AppError.conflict('이미 사용 중인 이메일입니다.');
     }
 
     const hashedPassword = await bcrypt.hash(input.password, 10);
@@ -41,16 +42,16 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error('이메일 또는 비밀번호가 올바르지 않습니다.');
+      throw AppError.unauthorized('이메일 또는 비밀번호가 올바르지 않습니다.');
     }
 
     if (!user.isActive) {
-      throw new Error('비활성화된 계정입니다.');
+      throw AppError.unauthorized('비활성화된 계정입니다.');
     }
 
     const isValid = await bcrypt.compare(input.password, user.password);
     if (!isValid) {
-      throw new Error('이메일 또는 비밀번호가 올바르지 않습니다.');
+      throw AppError.unauthorized('이메일 또는 비밀번호가 올바르지 않습니다.');
     }
 
     const authUser = { id: user.id, email: user.email, role: user.role };
@@ -80,7 +81,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new Error('사용자를 찾을 수 없습니다.');
+      throw AppError.notFound('사용자를 찾을 수 없습니다.');
     }
 
     return user;

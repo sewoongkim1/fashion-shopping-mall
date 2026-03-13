@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { adminApi } from '@/api/admin.api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 
 const ROLE_LABEL: Record<string, string> = { USER: '일반회원', ADMIN: '관리자' };
 
@@ -52,13 +53,13 @@ export default function AdminUsersPage() {
         <h1 className="text-2xl font-bold">회원관리</h1>
 
         {/* 필터/검색 */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <form onSubmit={handleSearch} className="flex gap-2">
             <Input
               placeholder="이름 또는 이메일 검색"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="w-64"
+              className="w-full sm:w-64"
             />
             <Button type="submit" variant="outline" size="sm">
               검색
@@ -84,7 +85,7 @@ export default function AdminUsersPage() {
         {/* 테이블 */}
         {isLoading ? (
           <div className="flex justify-center py-10">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            <LoadingSpinner />
           </div>
         ) : (
           <div className="overflow-x-auto rounded-lg border">

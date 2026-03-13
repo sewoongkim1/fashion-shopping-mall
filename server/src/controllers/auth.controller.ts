@@ -17,10 +17,6 @@ export class AuthController {
         message: '회원가입이 완료되었습니다.',
       });
     } catch (err) {
-      if (err instanceof Error && err.message === '이미 사용 중인 이메일입니다.') {
-        res.status(409).json({ success: false, message: err.message });
-        return;
-      }
       next(err);
     }
   }
@@ -38,13 +34,6 @@ export class AuthController {
         message: '로그인 성공',
       });
     } catch (err) {
-      if (err instanceof Error && (
-        err.message === '이메일 또는 비밀번호가 올바르지 않습니다.' ||
-        err.message === '비활성화된 계정입니다.'
-      )) {
-        res.status(401).json({ success: false, message: err.message });
-        return;
-      }
       next(err);
     }
   }

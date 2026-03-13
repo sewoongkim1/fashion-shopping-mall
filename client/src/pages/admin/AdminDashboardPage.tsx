@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 import { adminApi, type DashboardStats } from '@/api/admin.api';
+import { PageLoading } from '@/components/ui/loading-spinner';
 
 const ORDER_STATUS_LABEL: Record<string, string> = {
   PENDING: '결제대기',
@@ -35,11 +36,7 @@ export default function AdminDashboardPage() {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    );
+    return <PageLoading />;
   }
 
   if (!data) return null;
@@ -76,7 +73,7 @@ export default function AdminDashboardPage() {
         {/* 주문 상태별 현황 */}
         <div className="rounded-lg border bg-card p-4">
           <h2 className="mb-4 text-lg font-semibold">주문 상태별 현황</h2>
-          <div className="grid grid-cols-3 gap-3 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
             {Object.entries(ORDER_STATUS_LABEL).map(([key, label]) => (
               <div key={key} className="rounded-lg border p-3 text-center">
                 <p className="text-xs text-muted-foreground">{label}</p>

@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { PageLoading } from '@/components/ui/loading-spinner';
 import type { Category } from '@/types';
 
 const CATEGORIES: { value: Category | 'ALL'; label: string }[] = [
@@ -105,7 +106,7 @@ export default function ProductListPage() {
               placeholder="상품명을 입력하세요"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="w-60"
+              className="w-full sm:w-60"
             />
             <Button type="submit" variant="outline" size="default">
               검색
@@ -128,7 +129,7 @@ export default function ProductListPage() {
 
         {/* 상품 그리드 */}
         {isLoading ? (
-          <div className="py-20 text-center text-muted-foreground">로딩 중...</div>
+          <PageLoading />
         ) : items.length === 0 ? (
           <div className="py-20 text-center text-muted-foreground">
             {search ? `"${search}" 검색 결과가 없습니다.` : '등록된 상품이 없습니다.'}

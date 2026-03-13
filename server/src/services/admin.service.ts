@@ -1,4 +1,5 @@
 import prisma from '../lib/prisma';
+import { AppError } from '../lib/AppError';
 
 export class AdminService {
   /** 대시보드 통계 */
@@ -163,7 +164,7 @@ export class AdminService {
   /** 회원 상태 변경 */
   async toggleUserActive(userId: string) {
     const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new Error('회원을 찾을 수 없습니다.');
+    if (!user) throw AppError.notFound('회원을 찾을 수 없습니다.');
 
     return prisma.user.update({
       where: { id: userId },
@@ -175,7 +176,7 @@ export class AdminService {
   /** 회원 역할 변경 */
   async updateUserRole(userId: string, role: 'USER' | 'ADMIN') {
     const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new Error('회원을 찾을 수 없습니다.');
+    if (!user) throw AppError.notFound('회원을 찾을 수 없습니다.');
 
     return prisma.user.update({
       where: { id: userId },
@@ -235,7 +236,7 @@ export class AdminService {
         payment: true,
       },
     });
-    if (!order) throw new Error('주문을 찾을 수 없습니다.');
+    if (!order) throw AppError.notFound('주문을 찾을 수 없습니다.');
     return order;
   }
 
@@ -243,11 +244,11 @@ export class AdminService {
   async updateOrderStatus(orderId: string, status: string) {
     const validStatuses = ['PENDING', 'PAID', 'PREPARING', 'SHIPPING', 'DELIVERED', 'CANCELLED'];
     if (!validStatuses.includes(status)) {
-      throw new Error('유효하지 않은 주문 상태입니다.');
+      throw AppError.badRequest('유효하지 않은 주문 상태입니다.');
     }
 
     const order = await prisma.order.findUnique({ where: { id: orderId } });
-    if (!order) throw new Error('주문을 찾을 수 없습니다.');
+    if (!order) throw AppError.notFound('주문을 찾을 수 없습니다.');
 
     return prisma.order.update({
       where: { id: orderId },

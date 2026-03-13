@@ -1,4 +1,5 @@
 import prisma from '../lib/prisma';
+import { AppError } from '../lib/AppError';
 import type { CreateProductInput, UpdateProductInput, ProductListQuery } from '../validations/product.validation';
 import type { PaginatedResponse } from '../types';
 
@@ -91,7 +92,7 @@ export class ProductService {
     });
 
     if (!product || product.isDeleted) {
-      throw new Error('상품을 찾을 수 없습니다.');
+      throw AppError.notFound('상품을 찾을 수 없습니다.');
     }
 
     return product;
@@ -100,7 +101,7 @@ export class ProductService {
   async update(id: string, input: UpdateProductInput) {
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing || existing.isDeleted) {
-      throw new Error('상품을 찾을 수 없습니다.');
+      throw AppError.notFound('상품을 찾을 수 없습니다.');
     }
 
     const { images, options, ...productData } = input;
@@ -140,7 +141,7 @@ export class ProductService {
   async delete(id: string) {
     const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing || existing.isDeleted) {
-      throw new Error('상품을 찾을 수 없습니다.');
+      throw AppError.notFound('상품을 찾을 수 없습니다.');
     }
 
     await prisma.product.update({

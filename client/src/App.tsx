@@ -1,6 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HelmetProvider } from 'react-helmet-async';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { ToastProvider } from '@/components/ui/toast';
 import AuthLayout from '@/components/layout/AuthLayout';
 import ShopLayout from '@/components/layout/ShopLayout';
 import AdminLayout from '@/components/layout/AdminLayout';
@@ -20,6 +22,7 @@ import CartPage from '@/pages/shop/CartPage';
 import OrderPage from '@/pages/shop/OrderPage';
 import OrderCompletePage from '@/pages/shop/OrderCompletePage';
 import PaymentPage from '@/pages/shop/PaymentPage';
+import NotFoundPage from '@/pages/NotFoundPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,6 +37,8 @@ function App() {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
+        <ToastProvider>
+        <ErrorBoundary>
         <BrowserRouter>
           <Routes>
             {/* Auth 라우트 */}
@@ -67,8 +72,14 @@ function App() {
                 <Route path="/admin/orders/:id" element={<AdminOrderDetailPage />} />
               </Route>
             </Route>
+            {/* 404 페이지 */}
+            <Route element={<ShopLayout />}>
+              <Route path="*" element={<NotFoundPage />} />
+            </Route>
           </Routes>
         </BrowserRouter>
+        </ErrorBoundary>
+        </ToastProvider>
       </QueryClientProvider>
     </HelmetProvider>
   );

@@ -1,6 +1,7 @@
 import { Response, NextFunction } from 'express';
 import type { AuthRequest } from '../types';
 import { adminService } from '../services/admin.service';
+import { AppError } from '../lib/AppError';
 
 class AdminController {
   /** GET /api/admin/dashboard */
@@ -43,8 +44,7 @@ class AdminController {
     try {
       const { role } = req.body;
       if (!role || !['USER', 'ADMIN'].includes(role)) {
-        res.status(400).json({ success: false, message: '유효하지 않은 역할입니다.' });
-        return;
+        throw AppError.badRequest('유효하지 않은 역할입니다.');
       }
       const user = await adminService.updateUserRole(req.params.id as string, role);
       res.json({ success: true, data: user });
@@ -74,10 +74,6 @@ class AdminController {
       const order = await adminService.getOrderDetail(req.params.id as string);
       res.json({ success: true, data: order });
     } catch (err) {
-      if (err instanceof Error && err.message === '주문을 찾을 수 없습니다.') {
-        res.status(404).json({ success: false, message: err.message });
-        return;
-      }
       next(err);
     }
   }

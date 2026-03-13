@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { adminApi } from '@/api/admin.api';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import type { OrderStatus } from '@/types';
 
 const ORDER_STATUS_LABEL: Record<string, string> = {
@@ -81,13 +82,13 @@ export default function AdminOrdersPage() {
         <h1 className="text-2xl font-bold">주문관리</h1>
 
         {/* 필터/검색 */}
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <form onSubmit={handleSearch} className="flex gap-2">
             <Input
               placeholder="주문번호, 수령인, 회원명 검색"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
-              className="w-72"
+              className="w-full sm:w-72"
             />
             <Button type="submit" variant="outline" size="sm">
               검색
@@ -116,7 +117,7 @@ export default function AdminOrdersPage() {
         {/* 테이블 */}
         {isLoading ? (
           <div className="flex justify-center py-10">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+            <LoadingSpinner />
           </div>
         ) : (
           <div className="overflow-x-auto rounded-lg border">

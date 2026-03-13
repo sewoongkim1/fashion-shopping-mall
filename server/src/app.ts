@@ -33,8 +33,11 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/api/admin', adminRoutes);
 
+// 404 handler (매칭되지 않은 API 라우트)
+import { errorMiddleware, notFoundMiddleware } from './middlewares/error.middleware';
+app.use('/api/*', notFoundMiddleware);
+
 // Global error handler
-import { errorMiddleware } from './middlewares/error.middleware';
 app.use(errorMiddleware);
 
 export default app;

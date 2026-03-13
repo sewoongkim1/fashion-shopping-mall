@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Helmet } from 'react-helmet-async';
 import { adminApi } from '@/api/admin.api';
 import { Button } from '@/components/ui/button';
+import { PageLoading } from '@/components/ui/loading-spinner';
 
 const ORDER_STATUS_LABEL: Record<string, string> = {
   PENDING: '결제대기',
@@ -57,11 +58,7 @@ export default function AdminOrderDetailPage() {
   });
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-      </div>
-    );
+    return <PageLoading />;
   }
 
   if (!order) {

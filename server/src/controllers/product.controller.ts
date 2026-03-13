@@ -41,10 +41,6 @@ export class ProductController {
         data: product,
       });
     } catch (err) {
-      if (err instanceof Error && err.message === '상품을 찾을 수 없습니다.') {
-        res.status(404).json({ success: false, message: err.message });
-        return;
-      }
       next(err);
     }
   }
@@ -60,10 +56,6 @@ export class ProductController {
         message: '상품이 수정되었습니다.',
       });
     } catch (err) {
-      if (err instanceof Error && err.message === '상품을 찾을 수 없습니다.') {
-        res.status(404).json({ success: false, message: err.message });
-        return;
-      }
       next(err);
     }
   }
@@ -78,10 +70,6 @@ export class ProductController {
         message: '상품이 삭제되었습니다.',
       });
     } catch (err) {
-      if (err instanceof Error && err.message === '상품을 찾을 수 없습니다.') {
-        res.status(404).json({ success: false, message: err.message });
-        return;
-      }
       next(err);
     }
   }

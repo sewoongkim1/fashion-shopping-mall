@@ -1,4 +1,5 @@
 import prisma from '../lib/prisma';
+import { AppError } from '../lib/AppError';
 import type { CreateOrderInput, OrderListQuery } from '../validations/order.validation';
 import type { PaginatedResponse } from '../types';
 
@@ -27,11 +28,11 @@ export class OrderService {
       });
 
       if (!option) {
-        throw new Error(`상품 옵션을 찾을 수 없습니다: ${item.productName} (${item.optionColor}/${item.optionSize})`);
+        throw AppError.badRequest(`상품 옵션을 찾을 수 없습니다: ${item.productName} (${item.optionColor}/${item.optionSize})`);
       }
 
       if (option.stock < item.quantity) {
-        throw new Error(`재고가 부족합니다: ${item.productName} (${item.optionColor}/${item.optionSize}) - 남은 재고: ${option.stock}`);
+        throw AppError.badRequest(`재고가 부족합니다: ${item.productName} (${item.optionColor}/${item.optionSize}) - 남은 재고: ${option.stock}`);
       }
     }
 
@@ -122,11 +123,11 @@ export class OrderService {
     });
 
     if (!order) {
-      throw new Error('주문을 찾을 수 없습니다.');
+      throw AppError.notFound('주문을 찾을 수 없습니다.');
     }
 
     if (order.userId !== userId) {
-      throw new Error('접근 권한이 없습니다.');
+      throw AppError.forbidden('접근 권한이 없습니다.');
     }
 
     return order;

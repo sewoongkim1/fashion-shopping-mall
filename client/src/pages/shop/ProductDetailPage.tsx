@@ -14,6 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
+import { PageLoading } from '@/components/ui/loading-spinner';
 
 function formatPrice(price: number) {
   return price.toLocaleString('ko-KR') + '원';
@@ -33,7 +34,7 @@ export default function ProductDetailPage() {
   const [quantity, setQuantity] = useState(1);
 
   if (isLoading) {
-    return <div className="py-20 text-center text-muted-foreground">로딩 중...</div>;
+    return <PageLoading />;
   }
 
   if (!product) {
